@@ -88,6 +88,8 @@ class Modules
 		/* create or return an existing controller from the registry */
 		if ( ! isset(self::$registry[$alias])) 
 		{
+			// var_dump(CI::$APP->router->locate(explode('/', $module)));
+			// var_dump(CI::$APP->router->directory);
 			/* find the controller */
 			list($class) = CI::$APP->router->locate(explode('/', $module));
 	
@@ -191,19 +193,30 @@ class Modules
 			$modules[array_shift($segments)] = ltrim(implode('/', $segments).'/','/');
 		}	
 
-		foreach (Modules::$locations as $location => $offset) 
-		{					
-			foreach($modules as $module => $subpath) 
-			{			
+		foreach (Modules::$locations as $location => $offset)
+		{
+			foreach($modules as $module => $subpath)
+			{
 				$fullpath = $location.$module.'/'.$base.$subpath;
-				
-				if ($base == 'libraries/' OR $base == 'models/')
-				{
+
+				if ($base == 'libraries/' OR $base == 'models/') {
 					if(is_file($fullpath.ucfirst($file_ext))) return array($fullpath, ucfirst($file));
 				}
-				else
 				/* load non-class files */
-				if (is_file($fullpath.$file_ext)) return array($fullpath, $file);
+				else if (is_file($fullpath.$file_ext)) {
+					return array($fullpath, $file);
+				}
+
+				// handle dir madule 
+				$fullpath = $location.$module.'/'.$subpath.'/'.$base;
+
+				if ($base == 'libraries/' OR $base == 'models/') {
+					if(is_file($fullpath.ucfirst($file_ext))) return array($fullpath, ucfirst($file));
+				}
+				/* load non-class files */
+				else if (is_file($fullpath.$file_ext)) {
+					return array($fullpath, $file);
+				}
 			}
 		}
 		

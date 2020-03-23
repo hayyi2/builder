@@ -109,99 +109,46 @@ class MX_Router extends CI_Router
 	/** Locate the controller **/
 	public function locate($segments)
 	{
+		// reset directory
+		$this->directory = null;
+
 		$this->located = 0;
 		$ext = $this->config->item('controller_suffix').EXT;
 
-		/* use module route if available */
 		if (isset($segments[0]) && $routes = Modules::parse_routes($segments[0], implode('/', $segments)))
 		{
 			$segments = $routes;
 		}
 
-		/* get the segments array elements */
-		list($module, $directory, $controller) = array_pad($segments, 3, NULL);
+		$count_segment = count($segments);
+		for ($i=0; $i < $count_segment; $i++) {
+			$dir_module = $i == 0 ? $segments : array_slice($segments, 0, $i * -1);
+			$dir_module = implode('/', $dir_module);
+			foreach (Modules::$locations as $location => $offset){
+				if (is_dir($source = $location.$dir_module.'/controllers/')){
+					$this->module = $dir_module;
+					$this->directory = $offset.$dir_module.'/controllers/';
 
-		/* check modules */
-		foreach (Modules::$locations as $location => $offset)
-		{
-			/* module exists? */
-			if (is_dir($source = $location.$module.'/controllers/'))
-			{
-				$this->module = $module;
-				$this->directory = $offset.$module.'/controllers/';
-
-				/* module sub-controller exists? */
-				if($directory)
-				{
-					/* module sub-directory exists? */
-					if(is_dir($source.$directory.'/'))
-					{	
-						$source .= $directory.'/';
-						$this->directory .= $directory.'/';
-
-						/* module sub-directory controller exists? */
-						if($controller)
-						{
-							if(is_file($source.ucfirst($controller).$ext))
-							{
-								$this->located = 3;
-								return array_slice($segments, 2);
-							}
-							else $this->located = -1;
-						}
+					/* module sub-controller exists? */
+					if(isset($segments[$count_segment - $i]) && is_file($source.ucfirst($segments[$count_segment - $i]).$ext)){
+						$this->located = $count_segment - $i + 1;
+						return array_slice($segments, $count_segment - $i);
 					}
-					else
-					if(is_file($source.ucfirst($directory).$ext))
-					{
-						$this->located = 2;
-						return array_slice($segments, 1);
+
+					/* module controller exists? */
+					if(is_file($source.ucfirst($segments[$count_segment - 1 - $i]).$ext)){
+						$this->located = $count_segment - $i;
+						return array_slice($segments, $count_segment - 1 - $i);
 					}
-					else $this->located = -1;
-				}
-
-				/* module controller exists? */
-				if(is_file($source.ucfirst($module).$ext))
-				{
-					$this->located = 1;
-					return $segments;
 				}
 			}
-		}
-
-		if( ! empty($this->directory)) return;
-
-		/* application sub-directory controller exists? */
-		if($directory)
-		{
-			if(is_file(APPPATH.'controllers/'.$module.'/'.ucfirst($directory).$ext))
-			{
-				$this->directory = $module.'/';
-				return array_slice($segments, 1);
-			}
-
-			/* application sub-sub-directory controller exists? */
-			if($controller)
-			{ 
-				if(is_file(APPPATH.'controllers/'.$module.'/'.$directory.'/'.ucfirst($controller).$ext))
-				{
-					$this->directory = $module.'/'.$directory.'/';
-					return array_slice($segments, 2);
-				}
-			}
-		}
-
-		/* application controllers sub-directory exists? */
-		if (is_dir(APPPATH.'controllers/'.$module.'/'))
-		{
-			$this->directory = $module.'/';
-			return array_slice($segments, 1);
 		}
 
 		/* application controller exists? */
-		if (is_file(APPPATH.'controllers/'.ucfirst($module).$ext))
-		{
+		if (isset($segments[0]) && is_file(APPPATH.'controllers/'.ucfirst($segments[0]).$ext)){
 			return $segments;
 		}
+
 		
 		$this->located = -1;
 	}
@@ -212,22 +159,18 @@ class MX_Router extends CI_Router
 		if ( ! empty($_route))
 		{
 			// Are module/directory/controller/method segments being specified?
-			$sgs = sscanf($_route, '%[^/]/%[^/]/%[^/]/%s', $module, $directory, $class, $method);
-			
-			// set the module/controller directory location if found
-			if ($this->locate(array($module, $directory, $class)))
+
+			$args_segments = explode('/', $_route);
+			$count_segments = count($args_segments);
+
+			if ($this->locate($args_segments))
 			{
-				//reset to class/method
-				switch ($sgs)
-				{
-					case 1:	$_route = $module.'/index';
-						break;
-					case 2: $_route = ($this->located < 2) ? $module.'/'.$directory : $directory.'/index';
-						break;
-					case 3: $_route = ($this->located == 2) ? $directory.'/'.$class : $class.'/index';
-						break;
-					case 4: $_route = ($this->located == 3) ? $class.'/'.$method : $method.'/index';
-						break;
+				if ($this->located == 0) {
+					$_route = current($args_segments).'/index';
+				}else if ($count_segments == $this->located) {
+					$_route = end($args_segments).'/index';
+				}else if ($count_segments > $this->located) {
+					$_route = $args_segments[$this->located - 1].'/'.$args_segments[$this->located];
 				}
 			}
 		}
