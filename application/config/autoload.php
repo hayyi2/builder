@@ -58,7 +58,11 @@ $autoload['packages'] = array();
 |
 |	$autoload['libraries'] = array('user_agent' => 'ua');
 */
-$autoload['libraries'] = array();
+$autoload['libraries'] = array(
+	'session', 
+	'database', 
+	'form_validation', 
+);
 
 /*
 | -------------------------------------------------------------------
@@ -89,7 +93,13 @@ $autoload['drivers'] = array();
 |
 |	$autoload['helper'] = array('url', 'file');
 */
-$autoload['helper'] = array();
+$autoload['helper'] = array(
+	'url', 
+	'array', 
+	'function', 
+	'template', 
+	'auth',
+);
 
 /*
 | -------------------------------------------------------------------
@@ -103,7 +113,9 @@ $autoload['helper'] = array();
 | config files.  Otherwise, leave it blank.
 |
 */
-$autoload['config'] = array();
+$autoload['config'] = array(
+	'app',
+);
 
 /*
 | -------------------------------------------------------------------
@@ -132,4 +144,9 @@ $autoload['language'] = array();
 |
 |	$autoload['model'] = array('first_model' => 'first');
 */
-$autoload['model'] = array();
+$autoload['model'] = array(
+	'aplego_model', 
+	'option_model', 
+	'user/user_model', 
+	'user/user_meta_model', 
+);
