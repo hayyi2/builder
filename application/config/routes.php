@@ -52,3 +52,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+// remove core controller "*_controller"
+$route['(.+)_controller'] = '$1';
+$route['(.+)_controller(.+)'] = '$1$2';
