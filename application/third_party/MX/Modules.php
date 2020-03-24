@@ -78,7 +78,7 @@ class Modules
 	}
 	
 	/** Load a module controller **/
-	public static function load($module) 
+	public static function load($module, $init_class = false) 
 	{
 		(is_array($module)) ? list($module, $params) = each($module) : $params = NULL;	
 		
@@ -104,11 +104,13 @@ class Modules
 			self::load_file(ucfirst($class), $path);
 			
 			/* create and register the new controller */
-			$controller = ucfirst($class);	
-			self::$registry[$alias] = new $controller($params);
+			if ($init_class === true) {
+				$controller = ucfirst($class);	
+				self::$registry[$alias] = new $controller($params);
+				return self::$registry[$alias];
+			}
 		}
 		
-		return self::$registry[$alias];
 	}
 	
 	/** Library base class autoload **/
