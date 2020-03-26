@@ -14,7 +14,9 @@ if ($vendor_dir === false) $vendor_dir = 'assets/vendor/';
 	<title><?php echo $title; ?></title>
 
 	<!-- Bootstrap -->
-	<link href="assets/css/bootstrap.min.css" rel="stylesheet">
+	<link href="<?php echo $vendor_dir; ?>dashmaster/css/bootstrap.min.css" rel="stylesheet">
+	<!-- custom style -->
+	<link href="<?php echo $vendor_dir; ?>dashmaster/css/style.min.css" rel="stylesheet">
 
 	<!-- vendor -->
 	<!-- fontawesome -->
@@ -22,8 +24,6 @@ if ($vendor_dir === false) $vendor_dir = 'assets/vendor/';
 	<!-- dataTables -->
 	<link href="<?php echo $vendor_dir; ?>dataTables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
-	<!-- custom style -->
-	<link href="assets/css/style.min.css" rel="stylesheet">
 
 	<!-- vendor -->
 	<!-- jQuery -->
@@ -37,11 +37,11 @@ if ($vendor_dir === false) $vendor_dir = 'assets/vendor/';
 	<script src="<?php echo $vendor_dir; ?>dataTables/dataTables.bootstrap4.min.js"></script>
 
 	<!-- custom script -->
-	<script src="assets/js/script.js"></script>
+	<script src="<?php echo $vendor_dir; ?>dashmaster/js/script.js"></script>
 </head>
-<body class="skin-blue">
+<body class="topnav-xl minimalist">
 	<header>
-		<nav class="navbar navbar-dark fixed-top navbar-expand-xl">
+		<nav class="navbar navbar-expand-xl navbar-dark fixed-top">
 			<?php if (($menu = $this->config->item('main_menu')) !== null): ?>
 				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainnav">
 					<i class="fas fa-bars"></i>
@@ -56,7 +56,7 @@ if ($vendor_dir === false) $vendor_dir = 'assets/vendor/';
 	                        <?php if (is_assoc($item) && protected_item($item['capability'])): ?>
 	                            <?php if (isset($item['submenu'])):?>
 	                                <li class="nav-item dropdown<?php show_active_menu($active_menu, array_keys($item['submenu'])); ?>">
-	                                    <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+	                                    <a class="nav-link" href="#" data-toggle="dropdown">
 	                                        <i class="<?php echo $item['icon']; ?>"></i><?php echo $item['label']; ?>
 	                                    </a>
 	                                    <div class="dropdown-menu">
@@ -96,7 +96,7 @@ if ($vendor_dir === false) $vendor_dir = 'assets/vendor/';
 							<?php if (is_int($id) === false && protected_item($item['capability'])): ?>
 								<?php if (isset($item['submenu'])):?>
 									<li class="nav-item dropdown<?php show_active_menu($active_menu, array_keys($item['submenu'])); ?>">
-										<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">
+										<a class="nav-link" href="#" data-toggle="dropdown">
 											<span class="show-sm"><?php echo $item['label']; ?></span>
 											<i class="fa-fw <?php echo $item['icon']; if($item['label'] !== '') echo ' ml-0 ml-sm-1' ?>"></i> 
 										</a>
@@ -132,7 +132,7 @@ if ($vendor_dir === false) $vendor_dir = 'assets/vendor/';
 					<?php endif ?>
 					<?php if (empty($user_data = current_user_session()) === false): ?>
 						<li class="nav-item dropdown">
-							<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<a class="nav-link" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								<div class="avatar ml-0 ml-sm-2"><?php echo substr($user_data['name'], 0, 1); ?></div>
 								<span class="show-sm"><?php echo $user_data['name']; ?></span>
 							</a>

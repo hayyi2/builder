@@ -15,7 +15,7 @@ if ($vendor_dir === false) $vendor_dir = 'assets/vendor/';
 
 
     <!-- Bootstrap -->
-    <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<?php echo $vendor_dir; ?>dashmaster/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- vendor -->
     <!-- fontawesome -->
@@ -24,7 +24,7 @@ if ($vendor_dir === false) $vendor_dir = 'assets/vendor/';
     <link href="<?php echo $vendor_dir; ?>dataTables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
     <!-- custom style -->
-    <link href="assets/css/style.min.css" rel="stylesheet">
+    <link href="<?php echo $vendor_dir; ?>dashmaster/css/style.min.css" rel="stylesheet">
 
     <!-- vendor -->
     <!-- jQuery -->
@@ -38,6 +38,6 @@ if ($vendor_dir === false) $vendor_dir = 'assets/vendor/';
     <script src="<?php echo $vendor_dir; ?>dataTables/dataTables.bootstrap4.min.js"></script>
 
     <!-- custom script -->
-    <script src="assets/js/script.js"></script>
+    <script src="<?php echo $vendor_dir; ?>dashmaster/js/script.js"></script>
 </head>
 <body>
